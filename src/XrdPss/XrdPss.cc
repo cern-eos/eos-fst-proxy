@@ -1001,8 +1001,8 @@ int XrdPssSys::P2DST(int &retc, char *hBuff, int hBlen, XrdPssSys::PolAct pEnt,
 char *XrdPssSys::P2OUT(int &retc,  char *pbuff, int pblen,
                  const char *path, const char *Cgi, const char *Ident)
 {
-   char  hBuff[288], idBuff[8], *idP;
-   const char *theID = "", *Quest = "", *thePath = path;
+   char  idBuff[8], *idP;
+   const char *theID = "", *Quest = "";
    int n;
 
 // If we have an Ident then use the fd number as the userid. This allows us to
@@ -1018,41 +1018,21 @@ char *XrdPssSys::P2OUT(int &retc,  char *pbuff, int pblen,
    if (Cgi) Quest = "?";
       else  Cgi   = "";
 
-// Make sure the path is valid for an outgoing proxy
+// Extract the FST endpoint
 //
-   if (*path == '/') path++;
-   if (*path == 'x') path++;
-   if (!strncmp("root:/", path, 6)) path += 6;
-      else {if (!hdrLen) {retc = -ENOTSUP; return 0;}
-            n = snprintf(pbuff, pblen, hdrData, theID, thePath, Quest, Cgi);
-            if (n >= pblen) {retc = -ENAMETOOLONG; return 0;}
-            return pbuff;
-           }
+   char* fstgw = 0;
+   XrdOucEnv cgi_env(Cgi);
 
-// Objectid must be handled differently as they have not been refalgomized
-//
-   if (*thePath != '/')
-      {if (*path == '/') 
-          {path++;
-           if (*path == '/') theID = "";
-          }
-       if (Police[PolObj] && !P2DST(retc, hBuff, sizeof(hBuff), PolObj,
-                                    path+(*path == '/' ? 1:0))) return 0;
-       n = snprintf(pbuff, pblen, "root://%s%s%s%s", theID, path, Quest, Cgi);
-       if (n >= pblen) {retc = -ENAMETOOLONG; return 0;}
-       return pbuff;
-      }
-
-// Extract out the destination. We need to do this because the front end
-// will have extracted out double slashes and we need to add them back. We
-// also authorize the outgoing connection if we need to in the process.
-//
-   if (!(n = P2DST(retc, hBuff, sizeof(hBuff), PolPath, path))) return 0;
-   path += n;
+   if (!(fstgw = cgi_env.Get("eos.fstfrw")))
+   {
+     retc = EFAULT;
+     return 0;
+   }
 
 // Create the new path
 //
-   n = snprintf(pbuff,pblen,"root://%s%s/%s%s%s",theID,hBuff,path,Quest,Cgi);
+   n = snprintf(pbuff,pblen,"root://%s%s/%s%s%s",theID,fstgw,path,Quest,Cgi);
+   eDest.Emsg("eos_remap", "Redirect URL:", pbuff);
 
 // Make sure the path will fit
 //
