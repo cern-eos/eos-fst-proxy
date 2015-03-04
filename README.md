@@ -18,6 +18,7 @@ Configuration
 
 The proxy is configured as a normal XRootD server and following is an example configuration file:
 
+```
 ###########################################################
 all.export / nolock
 all.trace none
@@ -35,6 +36,7 @@ xrootd.seclib libXrdSec.so
 sec.protocol unix
 sec.protbind * only unix
 ###########################################################
+```
 
 Therefore, the only library used from this project that is different from the standard XRootD is the libXrdPssEos.
 
