@@ -5,7 +5,7 @@ include( XRootDCommon )
 # Modules
 #-------------------------------------------------------------------------------
 set( LIB_XRD_BWM        XrdBwm-${PLUGIN_VERSION} )
-set( LIB_XRD_PSS        XrdPss-${PLUGIN_VERSION} )
+set( LIB_XRD_PSS        XrdPssEos-${PLUGIN_VERSION} )
 set( LIB_XRD_GPFS       XrdOssSIgpfsT-${PLUGIN_VERSION} )
 set( LIB_XRD_ZCRC32     XrdCksCalczcrc32-${PLUGIN_VERSION} )
 
