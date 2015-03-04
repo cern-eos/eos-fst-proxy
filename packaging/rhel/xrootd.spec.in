@@ -150,6 +150,19 @@ Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
 %description server-libs
 This package contains libraries used by xrootd servers.
 
+
+#-------------------------------------------------------------------------------
+# eos-proxy
+#-------------------------------------------------------------------------------
+%package eos-proxy
+Summary:	EOS proxy pss module
+Group:		System Environment/Libraries
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-client-libs%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description eos-proxy
+This package contains an EOS specific proxy library
+
 #-------------------------------------------------------------------------------
 # server-devel
 #-------------------------------------------------------------------------------
@@ -283,6 +296,17 @@ Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description server-compat
 This package contains compatibility binaries for xrootd 3 servers.
+
+#-------------------------------------------------------------------------------
+# eos-compat-proxy
+#-------------------------------------------------------------------------------
+%package eos-compat-proxy
+Summary:	XRootD 3 compatibility EOS pss module
+Group:		System Environment/Daemons
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description eos-compat-proxy
+This package contains compatibility PSS library for xrootd 3 servers.
 
 #-------------------------------------------------------------------------------
 # Build instructions
@@ -623,12 +647,15 @@ fi
 %files server-libs
 %defattr(-,root,root,-)
 %{_libdir}/libXrdBwm-4.so
-%{_libdir}/libXrdPss-4.so
+#%{_libdir}/libXrdPss-4.so
 %{_libdir}/libXrdXrootd-4.so
 %{_libdir}/libXrdFileCache-4.so
 %{_libdir}/libXrdHttp-4.so
 %{_libdir}/libXrdOssSIgpfsT-4.so
 %{_libdir}/libXrdServer.so.*
+
+%files eos-proxy
+%{_libdir}/libXrdPssEos-4.so
 
 %files server-devel
 %defattr(-,root,root,-)
@@ -720,9 +747,12 @@ fi
 %{_libdir}/libXrdBwm.so*
 %{_libdir}/libXrdMain.so.1*
 %{_libdir}/libXrdOfs.so.1*
-%{_libdir}/libXrdPss.so*
+#%{_libdir}/libXrdPss.so*
 %{_libdir}/libXrdServer.so.1*
 %{_libdir}/libXrdXrootd.so*
+
+%files eos-compat-proxy
+%{_libdir}/libXrdPssEos.so
 
 #-------------------------------------------------------------------------------
 # Changelog
